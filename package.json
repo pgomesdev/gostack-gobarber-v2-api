@@ -1,0 +1,22 @@
+{
+  "name": "gostack-gobarber-v2-api",
+  "version": "1.0.0",
+  "repository": "git@github.com:pgomesdev/gostack-gobarber-v2-api.git",
+  "author": "pgomesdev <pgomesdev@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start:dev": "ts-node-dev --transpileOnly --ignore-watch node_modules src/server.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "debug": "^4.1.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.5",
+    "@types/express": "^4.17.7",
+    "ts-node-dev": "^1.0.0-pre.61",
+    "typescript": "^4.0.2"
+  }
+}
