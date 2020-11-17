@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { parseISO } from 'date-fns';
+import { getCustomRepository } from 'typeorm';
 import { AppointmentsRepository } from '../repositories/AppointmentsRepository';
 import { CreateAppointmentService } from '../services/CreateAppointmentService';
 import { Appointment } from '../models/Appointment';
@@ -8,34 +9,42 @@ import { Appointment } from '../models/Appointment';
  * @info baseUrl: /appointments
  */
 
+type ErrorMessage = {
+  message: string;
+};
+
 const appointmentsRouter = Router();
 
-const appointmentsRepository = new AppointmentsRepository();
-const createAppointmentService = new CreateAppointmentService(
-  appointmentsRepository,
+appointmentsRouter.get(
+  '/',
+  async (req: Request, res: Response<Appointment[]>) => {
+    const appointmentsRepository = getCustomRepository(AppointmentsRepository);
+    const appointments = await appointmentsRepository.find();
+
+    return res.json(appointments);
+  },
 );
 
-appointmentsRouter.get('/', (req: Request, res: Response<Appointment[]>) => {
-  const appointments = appointmentsRepository.findAll();
+appointmentsRouter.post(
+  '/',
+  async (req: Request, res: Response<Appointment | ErrorMessage>) => {
+    try {
+      const { provider, date } = req.body;
 
-  return res.json(appointments);
-});
+      const parsedDate = parseISO(date);
 
-appointmentsRouter.post('/', (req: Request, res: Response) => {
-  try {
-    const { provider, date } = req.body;
+      const createAppointmentService = new CreateAppointmentService();
 
-    const parsedDate = parseISO(date);
+      const appointment = await createAppointmentService.execute({
+        provider,
+        date: parsedDate,
+      });
 
-    const appointment = createAppointmentService.execute({
-      provider,
-      date: parsedDate,
-    });
-
-    return res.json(appointment);
-  } catch (error) {
-    return res.status(400).json({ message: error.message });
-  }
-});
+      return res.json(appointment);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
+);
 
 export default appointmentsRouter;
