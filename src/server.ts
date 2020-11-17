@@ -9,4 +9,6 @@ const app = express();
 
 app.get('/', (req, res) => res.json({ message: 'App is runnning...' }));
 
-app.listen(process.env.NODE_PORT, () => debug(`Server listening at port ${process.env.NODE_PORT}`));
+app.listen(process.env.NODE_PORT, () =>
+  debug(`Server listening at port ${process.env.NODE_PORT}`),
+);
