@@ -4,6 +4,7 @@ import { getCustomRepository } from 'typeorm';
 import { AppointmentsRepository } from '../repositories/AppointmentsRepository';
 import { CreateAppointmentService } from '../services/CreateAppointmentService';
 import { Appointment } from '../models/Appointment';
+import { ensureAuthenticated } from '../middlewares/ensureAuthenticated';
 
 /**
  * @info baseUrl: /appointments
@@ -14,6 +15,8 @@ type ErrorMessage = {
 };
 
 const appointmentsRouter = Router();
+
+appointmentsRouter.use(ensureAuthenticated);
 
 appointmentsRouter.get(
   '/',
